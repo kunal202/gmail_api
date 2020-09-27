@@ -1,7 +1,10 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const User = require('../utils/user.json')
-// const fs = 
+const jsonfile = require('jsonfile')
+const file = 'utils/user.json'
+var name = '';
 
+// passport helped in using google oauth
 module.exports = function (passport) {
     passport.use(
         new GoogleStrategy(
@@ -20,8 +23,20 @@ module.exports = function (passport) {
                 }
 
                 try {
-                    
+                    const obj = {
+                        googleId: profile.id,
+                        displayName: profile.displayName,
+                        firstName: profile.name.givenName,
+                        lastName: profile.name.familyName,
+                        image: profile.photos[0].value,
+                        name: displayName
+                    }
+                    console.log(profile);
+                    jsonfile.writeFile(file, obj, function (err) {
+                        if (err) console.error(err)
+                    })
                     console.log(newUser);
+                    done();
                 } catch (err) {
                     console.error(err)
                 }
